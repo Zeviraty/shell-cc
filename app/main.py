@@ -45,7 +45,7 @@ def main():
                 cmds = {}
                 for x in path:
                     for y in os.listdir(x):
-                        cmds[y] = x
+                        cmds[y.replace("/usr","")] = x
                 args = argparse(cmd[1:],[str])
                 if args[1][1] == True or args[0][0][1] == False:
                     print("Argument failure")
