@@ -38,7 +38,7 @@ def main():
                 if len(cmd[1:]) == 0:
                     print()
                 else:
-                    print("".join(cmd[1:]))
+                    print(" ".join(cmd[1:]))
             case _:
                 print(f"{' '.join(cmd)}: command not found")
 
