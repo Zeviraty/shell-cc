@@ -7,22 +7,6 @@ def typer(base,conduit:type) -> tuple:
     except:
         return (0,False)
 
-def step_through_path(path):
-    parts = path.strip(os.sep).split(os.sep)
-    current = os.sep
-
-    for part in parts:
-        current = os.path.join(current, part)
-        print(f"Contents of {current}:")
-        try:
-            for item in os.listdir(current):
-                print(f"  {item}")
-        except PermissionError:
-            print("  [Permission Denied]")
-        except FileNotFoundError:
-            print("  [Not Found]")
-        print()  # Separate output between levels
-
 def argparse(args,types:list[type]) -> tuple:
     tmp = []
     failed = [0,False]
@@ -60,9 +44,8 @@ def main():
                 path = os.environ["PATH"].split(":")
                 cmds = {}
                 for x in path:
-                    step_through_path(x)
-                    #for y in os.listdir(x):
-                    #    cmds[y] = x
+                    for y in os.listdir(x.strip(os.sep)):
+                        cmds[y] = x.strip(os.sep)
                 args = argparse(cmd[1:],[str])
                 if args[1][1] == True or args[0][0][1] == False:
                     print("Argument failure")
