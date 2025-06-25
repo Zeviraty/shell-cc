@@ -35,12 +35,10 @@ def main():
                 else:
                     exit(args[0][0][0])
             case "echo":
-                args = argparse(cmd[1:],[str])
-                if args[1][1] == True or args[0][0][1] == False:
-                    print("Argument failure")
+                if len(cmd[1:]) == 0:
+                    print()
                 else:
-                    print(args[0][0][0])
-
+                    print("".join(cmd[1:]))
             case _:
                 print(f"{' '.join(cmd)}: command not found")
 
