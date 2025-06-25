@@ -39,6 +39,15 @@ def main():
                     print()
                 else:
                     print(" ".join(cmd[1:]))
+            case "type":
+                args = argparse(cmd[1:],[str])
+                if args[1][1] == True or args[0][0][1] == False:
+                    print("Argument failure")
+                else:
+                    if args[0][0][0] in ["exit","echo","type"]:
+                        print(f"{args[0][0][0]} is a shell builtin")
+                    else:
+                        print(f"{args[0][0][0]}: not found")
             case _:
                 print(f"{' '.join(cmd)}: command not found")
 
