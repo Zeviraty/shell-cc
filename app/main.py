@@ -125,7 +125,7 @@ global builtins
 builtins = ["exit","echo","type","pwd","history"]
 
 def main():
-    readline.read_history_file(os.environ("HISTFILE"))
+    readline.read_history_file(os.environ["HISTFILE"])
     initial_history_length = readline.get_current_history_length()
     readline.set_auto_history(False)
     readline.set_completer(complete)
