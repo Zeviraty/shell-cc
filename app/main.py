@@ -44,7 +44,11 @@ def main():
                 path = os.environ["PATH"].split(":")
                 cmds = {}
                 for x in path:
-                    for y in os.listdir(os.path.join(x)):
+                    try:
+                        ls = os.listdir(os.path.join(x))
+                    except:
+                        continue
+                    for y in ls:
                         cmds[y] = os.path.join(x)
                 args = argparse(cmd[1:],[str])
                 if args[1][1] == True or args[0][0][1] == False:
