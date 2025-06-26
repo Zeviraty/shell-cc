@@ -104,7 +104,7 @@ def complete(text, state):
                 continue
         complete._cmds = cmds
 
-    results = [x for x in [*complete._cmds, *builtins] if x.startswith(text)] + [None]
+    results = [x + " " for x in [*complete._cmds, *builtins] if x.startswith(text)] + [None]
     return results[state]
 
 global builtins
