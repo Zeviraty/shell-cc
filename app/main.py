@@ -28,6 +28,16 @@ def main():
     while True:
         sys.stdout.write("$ ")
         cmd = input().split(" ")
+        path = os.environ["PATH"].split(":")
+        cmds = {}
+        for x in path:
+            try:
+                ls = os.listdir(os.path.join(x))
+            except:
+                continue
+            for y in ls:
+                if os.access(os.path.join(x,y), os.X_OK):
+                    cmds[y] = os.path.join(x)
         match cmd[0]:
             case "exit":
                 args = argparse(cmd[1:],[int])
@@ -41,16 +51,6 @@ def main():
                 else:
                     print(" ".join(cmd[1:]))
             case "type":
-                path = os.environ["PATH"].split(":")
-                path.reverse()
-                cmds = {}
-                for x in path:
-                    try:
-                        ls = os.listdir(os.path.join(x))
-                    except:
-                        continue
-                    for y in ls:
-                        cmds[y] = os.path.join(x)
                 args = argparse(cmd[1:],[str])
                 if args[1][1] == True or args[0][0][1] == False:
                     print("Argument failure")
@@ -62,7 +62,10 @@ def main():
                     else:
                         print(f"{args[0][0][0]}: not found")
             case _:
-                print(f"{' '.join(cmd)}: command not found")
+                if cmd[0] in cmds.keys():
+                    os.system(f"{os.path.join(cmds[cmd[0]],cmd[0])} {' '.join(cmd[1:])}")
+                else:
+                    print(f"{' '.join(cmd)}: command not found")
 
 
 if __name__ == "__main__":
