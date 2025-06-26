@@ -189,20 +189,21 @@ def main():
                             readline.read_history_file(args[0][1][0])
                         else:
                             print("Argument failure")
-                args = argparse(split,[int])
-                if args[1][1] == True or args[0][0][1] == False:
-                    for i in range(readline.get_current_history_length()):
-                        if readline.get_history_item(i) == None: continue
-                        print(f"    {i}  {readline.get_history_item(i)}")
-                    print(f"    {i}  history")
                 else:
-                    count = args[0][0][0]
-                    length = readline.get_current_history_length()
-                    start = max(length - count + 1, 1)
-                    for i in range(start, length + 1):
-                        line = readline.get_history_item(i)
-                        if line is not None:
-                            print(f"    {i}  {line}")
+                    args = argparse(split,[int])
+                    if args[1][1] == True or args[0][0][1] == False:
+                        for i in range(readline.get_current_history_length()):
+                            if readline.get_history_item(i) == None: continue
+                            print(f"    {i}  {readline.get_history_item(i)}")
+                        print(f"    {i}  history")
+                    else:
+                        count = args[0][0][0]
+                        length = readline.get_current_history_length()
+                        start = max(length - count + 1, 1)
+                        for i in range(start, length + 1):
+                            line = readline.get_history_item(i)
+                            if line is not None:
+                                print(f"    {i}  {line}")
             case _:
                 if cmd[0] in cmds.keys():
                     subprocess.run(cmd)
