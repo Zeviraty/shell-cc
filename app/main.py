@@ -63,6 +63,15 @@ def main():
                         print(f"{args[0][0][0]}: not found")
             case "pwd":
                 print(os.getcwd())
+            case "cd":
+                args = argparse(cmd[1:],[str])
+                if args[1][1] == True or args[0][0][1] == False:
+                    print("Argument failure")
+                else:
+                    if os.path.exists(args[0][0][0]):
+                        os.chdir(args[0][0][0])
+                    else:
+                        print(f"cd: {args[0][0][0]}: No such file or directory")
             case _:
                 if cmd[0] in cmds.keys():
                     os.system(f"{cmd[0]} {' '.join(cmd[1:])}")
