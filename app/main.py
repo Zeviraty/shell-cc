@@ -129,7 +129,7 @@ def cmdprint(txt,out=None):
     if out == None:
         print(txt)
     else:
-        open(out,'a').write(out+"\n")
+        open(out,'a').write(txt+"\n")
 
 def main():
     histfile = os.environ.get("HISTFILE")
