@@ -127,11 +127,10 @@ builtins = ["exit","echo","type","pwd","history"]
 def main():
     if os.path.exists(os.environ["HISTFILE"]):
         histfile = os.environ.get("HISTFILE")
-        print(f"HISTFILE: {repr(histfile)}")
         if histfile:
             try:
                 readline.read_history_file(histfile)
-            except FileNotFoundError:
+            except:
                 pass
     initial_history_length = readline.get_current_history_length()
     readline.set_auto_history(False)
