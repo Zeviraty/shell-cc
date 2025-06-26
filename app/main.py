@@ -42,6 +42,7 @@ def main():
                     print(" ".join(cmd[1:]))
             case "type":
                 path = os.environ["PATH"].split(":")
+                path.reverse()
                 cmds = {}
                 for x in path:
                     try:
