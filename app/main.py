@@ -211,6 +211,8 @@ def main():
                     cmdprint("", stdout_file)
                 else:
                     cmdprint(" ".join(split), stdout_file)
+                if stderr_file:
+                    open(stderr_file, "w").close()
             case "type":
                 args = argparse(split,[str])
                 if args[1][1] == True or args[0][0][1] == False:
