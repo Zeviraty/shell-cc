@@ -125,6 +125,12 @@ def complete(text, state):
 global builtins
 builtins = ["exit","echo","type","pwd","history"]
 
+def cmdprint(txt,out=None):
+    if out == None:
+        print(txt)
+    else:
+        open(out,'a').write(out+"\n")
+
 def main():
     histfile = os.environ.get("HISTFILE")
     if histfile:
@@ -141,7 +147,29 @@ def main():
     while True:
         user_input = input("$ ")
         readline.add_history(user_input)
+        tokens = shlex.split(user_input)
+        if not tokens:
+            continue
         cmd = smart_split(user_input)
+        redirect_index = None
+        redirect_file = None
+        for i, token in enumerate(tokens):
+            if token == '>' or token == '1>':
+                redirect_index = i
+                break
+
+        if redirect_index is not None:
+            if redirect_index + 1 < len(tokens):
+                redirect_file = tokens[redirect_index + 1]
+                cmd_tokens = tokens[:redirect_index]
+            else:
+                print("Syntax error: no output file specified for redirection")
+                continue
+        else:
+            cmd_tokens = tokens
+        if not cmd_tokens:
+            continue
+        cmd = cmd_tokens
         current_length = readline.get_current_history_length()
         delta = current_length - initial_history_length
         if delta > 0:
@@ -168,36 +196,36 @@ def main():
                     exit(args[0][0][0])
             case "echo":
                 if len(cmd[1:]) == 0:
-                    print()
+                    cmdprint("",redirect_file)
                 else:
-                    print(" ".join(split))
+                    cmdprint(" ".join(split),redirect_file)
             case "type":
                 args = argparse(split,[str])
                 if args[1][1] == True or args[0][0][1] == False:
-                    print("Argument failure")
+                    cmdprint("Argument failure",redirect_file)
                 else:
                     if args[0][0][0] in builtins:
-                        print(f"{args[0][0][0]} is a shell builtin")
+                        cmdprint(f"{args[0][0][0]} is a shell builtin",redirect_file)
                     elif args[0][0][0] in cmds.keys():
-                        print(f"{args[0][0][0]} is {cmds[args[0][0][0]]}/{args[0][0][0]}")
+                        cmdprint(f"{args[0][0][0]} is {cmds[args[0][0][0]]}/{args[0][0][0]}",redirect_file)
                     else:
-                        print(f"{args[0][0][0]}: not found")
+                        cmdprint(f"{args[0][0][0]}: not found",redirect_file)
             case "pwd":
-                print(os.getcwd())
+                cmdprint(os.getcwd(),redirect_file)
             case "cd":
                 args = argparse(split,[str])
                 if args[1][1] == True or args[0][0][1] == False:
-                    print("Argument failure")
+                    cmdprint("Argument failure",redirect_file)
                 else:
                     if os.path.exists(os.path.expanduser(args[0][0][0])):
                         os.chdir(os.path.expanduser(args[0][0][0]))
                     else:
-                        print(f"cd: {args[0][0][0]}: No such file or directory")
+                        cmdprint(f"cd: {args[0][0][0]}: No such file or directory",redirect_file)
             case "history":
                 if len(split) > 1:
                     args = argparse(split,[str,str])
                     if args[1][1] == True or args[0][0][1] == False:
-                        print("Argument failure")
+                        cmdprint("Argument failure",redirect_file)
                     else:
                         if args[0][0][0] == "-r":
                             readline.read_history_file(args[0][1][0])
@@ -210,14 +238,14 @@ def main():
                                 readline.append_history_file(delta, args[0][1][0])
                                 saved_history_length = current_length
                         else:
-                            print("Argument failure")
+                            cmdprint("Argument failure",redirect_file)
                 else:
                     args = argparse(split,[int])
                     if args[1][1] == True or args[0][0][1] == False:
                         for i in range(readline.get_current_history_length()):
                             if readline.get_history_item(i) == None: continue
-                            print(f"    {i}  {readline.get_history_item(i)}")
-                        print(f"    {i}  history")
+                            cmdprint(f"    {i}  {readline.get_history_item(i)}",redirect_file)
+                        cmdprint(f"    {i}  history",redirect_file)
                     else:
                         count = args[0][0][0]
                         length = readline.get_current_history_length()
@@ -225,12 +253,12 @@ def main():
                         for i in range(start, length + 1):
                             line = readline.get_history_item(i)
                             if line is not None:
-                                print(f"    {i}  {line}")
+                                cmdprint(f"    {i}  {line}",redirect_file)
             case _:
                 if cmd[0] in cmds.keys():
                     subprocess.run(cmd)
                 else:
-                    print(f"{' '.join(cmd)}: command not found")
+                    cmdprint(f"{' '.join(cmd)}: command not found",redirect_file)
 
 if __name__ == "__main__":
     main()
