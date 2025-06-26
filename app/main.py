@@ -144,7 +144,8 @@ def main():
         current_length = readline.get_current_history_length()
         delta = current_length - initial_history_length
         if delta > 0:
-            readline.append_history_file(delta,os.environ.get("HISTFILE"))
+            if os.path.exists(os.environ.get("HISTFILE")):
+                readline.append_history_file(delta,os.environ.get("HISTFILE"))
         initial_history_length = current_length
         split = cmd[1:]
         path = os.environ["PATH"].split(":")
