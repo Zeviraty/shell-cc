@@ -2,6 +2,7 @@ import sys
 import os
 import re
 import subprocess
+import readline
 
 def typer(base,conduit:type) -> tuple:
     try:
@@ -90,10 +91,30 @@ def argparse(args,types:list[type]) -> tuple:
         tmp.append(typed)
     return (tmp,failed)
 
+def complete(text, state):
+    if not hasattr(complete, "_cmds"):
+        path = os.environ["PATH"].split(":")
+        cmds = set()
+        for x in path:
+            try:
+                for y in os.listdir(x):
+                    if os.access(os.path.join(x, y), os.X_OK):
+                        cmds.add(y)
+            except:
+                continue
+        complete._cmds = cmds
+
+    results = [x for x in [*complete._cmds, *builtins] if x.startswith(text)] + [None]
+    return results[state]
+
+global builtins
+builtins = ["exit","echo","type","pwd"]
+
 def main():
+    readline.set_completer(complete)
+    readline.parse_and_bind("tab: complete")
     while True:
-        sys.stdout.write("$ ")
-        cmd = smart_split(input())
+        cmd = smart_split(input("$ "))
         split = cmd[1:]
         path = os.environ["PATH"].split(":")
         cmds = {}
@@ -122,7 +143,7 @@ def main():
                 if args[1][1] == True or args[0][0][1] == False:
                     print("Argument failure")
                 else:
-                    if args[0][0][0] in ["exit","echo","type","pwd"]:
+                    if args[0][0][0] in builtins:
                         print(f"{args[0][0][0]} is a shell builtin")
                     elif args[0][0][0] in cmds.keys():
                         print(f"{args[0][0][0]} is {cmds[args[0][0][0]]}/{args[0][0][0]}")
