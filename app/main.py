@@ -87,8 +87,8 @@ def argparse(args,types:list[type]) -> tuple:
 def main():
     while True:
         sys.stdout.write("$ ")
-        cmd = input().split(" ")
-        split = smart_split(" ".join(cmd[1:]))
+        cmd = smart_split(input())
+        split = cmd[1:]
         path = os.environ["PATH"].split(":")
         cmds = {}
         for x in path:
