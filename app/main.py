@@ -255,10 +255,20 @@ def main():
                             if line is not None:
                                 cmdprint(f"    {i}  {line}",redirect_file)
             case _:
-                if cmd[0] in cmds.keys():
-                    subprocess.run(cmd)
+                if cmd_name in cmds.keys():
+                    try:
+                        if redirect_file:
+                            with open(redirect_file, "w") as f:
+                                result = subprocess.run(cmd_tokens, stdout=f, stderr=subprocess.PIPE, text=True)
+                                if result.stderr:
+                                    print(result.stderr, end="")
+                        else:
+                            subprocess.run(cmd_tokens)
+                    except Exception as e:
+                        print(f"{cmd_name}: {e}")
                 else:
-                    cmdprint(f"{' '.join(cmd)}: command not found",redirect_file)
+                    print(f"{cmd_name}: command not found")
+
 
 if __name__ == "__main__":
     main()
