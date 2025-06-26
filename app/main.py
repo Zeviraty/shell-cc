@@ -189,9 +189,13 @@ def main():
                         print(f"    {i}  {readline.get_history_item(i)}")
                     print(f"    {i}  history")
                 else:
-                    for i in range(args[0][0][0],0):
-                        if readline.get_history_item(readline.get_current_history_length()-i) == None: continue
-                        print(f"    {readline.get_current_history_length() - i} {readline.get_history_item(readline.get_current_history_length() - i)}")
+                    count = args[0][0][0]
+                    length = readline.get_current_history_length()
+                    start = max(length - count + 1, 1)
+                    for i in range(start, length + 1):
+                        line = readline.get_history_item(i)
+                        if line is not None:
+                            print(f"    {i}  {line}")
             case _:
                 if cmd[0] in cmds.keys():
                     subprocess.run(cmd)
