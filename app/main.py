@@ -19,19 +19,26 @@ def smart_split(text):
 
         if c in ('"', "'"):
             if quote_char is None:
-                quote_char = c  
+                quote_char = c
+                i += 1
+                continue
             elif quote_char == c:
-                quote_char = None  
-            i += 1
+                quote_char = None
+                i += 1
+                continue
+            else:
+                buffer += c
         elif c.isspace() and quote_char is None:
             if buffer:
                 tokens.append(buffer)
                 buffer = ''
             while i < len(text) and text[i].isspace():
                 i += 1
+            continue
         else:
             buffer += c
-            i += 1
+
+        i += 1
 
     if buffer:
         tokens.append(buffer)
