@@ -15,7 +15,7 @@ def smart_split(text):
     i = 0
     while i < len(text):
         c = text[i]
-        if c == "'" or '"':
+        if c == "'" or c == '"':
             if in_quote:
                 in_quote = False
                 # End of quoted token, continue appending if adjacent quotes follow
