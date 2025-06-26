@@ -57,7 +57,7 @@ def main():
                     if args[0][0][0] in ["exit","echo","type"]:
                         print(f"{args[0][0][0]} is a shell builtin")
                     if args[0][0][0] in cmds.keys():
-                        print(f"{args[0][0][0]} is {cmds[args[0][0][0]]}")
+                        print(f"{args[0][0][0]} is {cmds[args[0][0][0]]}/{args[0][0][0]}")
                     else:
                         print(f"{args[0][0][0]}: not found")
             case _:
