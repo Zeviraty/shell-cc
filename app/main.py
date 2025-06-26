@@ -255,7 +255,7 @@ def main():
                             if line is not None:
                                 cmdprint(f"    {i}  {line}",redirect_file)
             case _:
-                if cmd_name in cmds.keys():
+                if cmd[0] in cmds.keys():
                     try:
                         if redirect_file:
                             with open(redirect_file, "w") as f:
