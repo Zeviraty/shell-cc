@@ -55,12 +55,14 @@ def main():
                 if args[1][1] == True or args[0][0][1] == False:
                     print("Argument failure")
                 else:
-                    if args[0][0][0] in ["exit","echo","type"]:
+                    if args[0][0][0] in ["exit","echo","type","pwd"]:
                         print(f"{args[0][0][0]} is a shell builtin")
                     elif args[0][0][0] in cmds.keys():
                         print(f"{args[0][0][0]} is {cmds[args[0][0][0]]}/{args[0][0][0]}")
                     else:
                         print(f"{args[0][0][0]}: not found")
+            case "pwd":
+                print(os.getcwd())
             case _:
                 if cmd[0] in cmds.keys():
                     os.system(f"{cmd[0]} {' '.join(cmd[1:])}")
