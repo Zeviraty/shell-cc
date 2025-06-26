@@ -1,6 +1,7 @@
 import sys
 import os
 import re
+import subprocess
 
 def typer(base,conduit:type) -> tuple:
     try:
@@ -140,7 +141,7 @@ def main():
                         print(f"cd: {args[0][0][0]}: No such file or directory")
             case _:
                 if cmd[0] in cmds.keys():
-                    os.system(f"'{cmd[0]}' {' '.join(cmd[1:])}")
+                    subprocess.run(cmd)
                 else:
                     print(f"{' '.join(cmd)}: command not found")
 
