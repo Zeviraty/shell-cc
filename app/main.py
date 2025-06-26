@@ -129,8 +129,8 @@ def main():
     readline.set_completer(complete)
     readline.parse_and_bind("tab: complete")
     readline.set_completer_delims(' \t\n')
-    #if os.path.exists("history"):
-    #    readline.read_history_file("history")
+    if os.path.exists("history"):
+        readline.read_history_file("history")
     while True:
         user_input = input("$ ")
         readline.add_history(user_input)
