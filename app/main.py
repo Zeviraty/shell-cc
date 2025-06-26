@@ -125,7 +125,7 @@ global builtins
 builtins = ["exit","echo","type","pwd","history"]
 
 def main():
-    readline.set_auto_history(True)
+    readline.set_auto_history(False)
     readline.set_completer(complete)
     readline.parse_and_bind("tab: complete")
     readline.set_completer_delims(' \t\n')
