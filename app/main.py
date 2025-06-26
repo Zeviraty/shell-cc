@@ -57,7 +57,8 @@ def argparse(args,types:list[type]) -> tuple:
 def main():
     while True:
         sys.stdout.write("$ ")
-        cmd = smart_split(input())
+        cmd = input().split(" ")
+        split = smart_split(" ".join(cmd[1:]))
         path = os.environ["PATH"].split(":")
         cmds = {}
         for x in path:
@@ -70,9 +71,9 @@ def main():
                     cmds[y] = os.path.join(x)
         match cmd[0]:
             case "exit":
-                args = argparse(cmd[1:],[int])
+                args = argparse(split,[int])
                 if args[1][1] == True or args[0][0][1] == False:
-                    print("Argument failure")
+                    exit(0)
                 else:
                     exit(args[0][0][0])
             case "echo":
@@ -81,7 +82,7 @@ def main():
                 else:
                     print(" ".join(cmd[1:]))
             case "type":
-                args = argparse(cmd[1:],[str])
+                args = argparse(split,[str])
                 if args[1][1] == True or args[0][0][1] == False:
                     print("Argument failure")
                 else:
@@ -94,7 +95,7 @@ def main():
             case "pwd":
                 print(os.getcwd())
             case "cd":
-                args = argparse(cmd[1:],[str])
+                args = argparse(split,[str])
                 if args[1][1] == True or args[0][0][1] == False:
                     print("Argument failure")
                 else:
