@@ -187,6 +187,8 @@ def main():
                     else:
                         if args[0][0][0] == "-r":
                             readline.read_history_file(args[0][1][0])
+                        elif args[0][0][0] == "-w":
+                            readline.write_history_file(args[0][1][0])
                         else:
                             print("Argument failure")
                 else:
