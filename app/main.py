@@ -68,8 +68,8 @@ def main():
                 if args[1][1] == True or args[0][0][1] == False:
                     print("Argument failure")
                 else:
-                    if os.path.exists(args[0][0][0]):
-                        os.chdir(args[0][0][0])
+                    if os.path.exists(os.path.expanduser(args[0][0][0])):
+                        os.chdir(os.path.expanduser(args[0][0][0]))
                     else:
                         print(f"cd: {args[0][0][0]}: No such file or directory")
             case _:
