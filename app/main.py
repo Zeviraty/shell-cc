@@ -190,7 +190,7 @@ def main():
                         elif args[0][0][0] == "-w":
                             readline.write_history_file(args[0][1][0])
                         elif args[0][0][0] == "-a":
-                            readline.append_history_file(args[0][1][0])
+                            readline.append_history_file(readline.get_current_history_length(),args[0][1][0])
                         else:
                             print("Argument failure")
                 else:
