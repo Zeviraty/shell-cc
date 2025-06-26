@@ -132,7 +132,6 @@ def cmdprint(txt,out=None):
     if out == None:
         print(txt)
     else:
-        print(append)
         if append:
             open(out,'a').write(txt+"\n")
         else:
