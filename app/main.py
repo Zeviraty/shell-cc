@@ -93,21 +93,33 @@ def argparse(args,types:list[type]) -> tuple:
 
 def complete(text, state):
     if not hasattr(complete, "_cmds"):
-        path = os.environ["PATH"].split(":")
+        path = os.environ.get("PATH", "").split(":")
         cmds = set()
-        for x in path:
+        for directory in path:
             try:
-                for y in os.listdir(x):
-                    if os.access(os.path.join(x, y), os.X_OK):
-                        cmds.add(y)
-            except:
+                for file in os.listdir(directory):
+                    full_path = os.path.join(directory, file)
+                    if os.access(full_path, os.X_OK) and not os.path.isdir(full_path):
+                        cmds.add(file)
+            except Exception:
                 continue
         complete._cmds = cmds
 
-    results = [x for x in [*complete._cmds, *builtins] if x.startswith(text)] + [None]
-    if results == [None]:
-        print("\x07")
-    return results[state]
+    matches = [cmd for cmd in complete._cmds.union(builtins) if cmd.startswith(text)]
+
+    if state == 0:
+        if not matches:
+            print("\x07", end='', flush=True)
+
+        if len(matches) == 1:
+            complete._matches = [matches[0] + ' ']
+        else:
+            complete._matches = matches
+
+    try:
+        return complete._matches[state]
+    except IndexError:
+        return None
 
 global builtins
 builtins = ["exit","echo","type","pwd"]
