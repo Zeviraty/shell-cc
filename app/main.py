@@ -50,11 +50,11 @@ def smart_split(text):
                 quote_char = None
                 i += 1
                 continue
-    else:
-        # quote inside another quote type — treat literally
-        buffer += c
-        i += 1
-        continue
+            else:
+                # quote inside another quote type — treat literally
+                buffer += c
+                i += 1
+                continue
 
         if c.isspace() and quote_char is None:
             if buffer:
