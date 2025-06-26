@@ -1,11 +1,16 @@
 import sys
 import os
+import re
 
 def typer(base,conduit:type) -> tuple:
     try:
         return (conduit(base),True)
     except:
         return (0,False)
+
+def split_phrase(text):
+    parts = re.findall(r"'([^']+)'|\"([^\"]+)\"|(\S+)", text)
+    return [part for group in parts for part in group if part]
 
 def argparse(args,types:list[type]) -> tuple:
     tmp = []
@@ -27,7 +32,7 @@ def argparse(args,types:list[type]) -> tuple:
 def main():
     while True:
         sys.stdout.write("$ ")
-        cmd = input().split(" ")
+        cmd = split_phrase(input())
         path = os.environ["PATH"].split(":")
         cmds = {}
         for x in path:
