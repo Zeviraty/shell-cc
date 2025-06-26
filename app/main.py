@@ -161,15 +161,15 @@ def main():
         if redirect_index is not None:
             if redirect_index + 1 < len(tokens):
                 redirect_file = tokens[redirect_index + 1]
-                cmd_tokens = tokens[:redirect_index]
+                cmd = tokens[:redirect_index]
             else:
                 print("Syntax error: no output file specified for redirection")
                 continue
         else:
-            cmd_tokens = tokens
-        if not cmd_tokens:
+            cmd = tokens
+        if not cmd:
             continue
-        cmd = cmd_tokens
+        cmd = cmd
         current_length = readline.get_current_history_length()
         delta = current_length - initial_history_length
         if delta > 0:
@@ -259,15 +259,15 @@ def main():
                     try:
                         if redirect_file:
                             with open(redirect_file, "w") as f:
-                                result = subprocess.run(cmd_tokens, stdout=f, stderr=subprocess.PIPE, text=True)
+                                result = subprocess.run(cmd, stdout=f, stderr=subprocess.PIPE, text=True)
                                 if result.stderr:
                                     print(result.stderr, end="")
                         else:
-                            subprocess.run(cmd_tokens)
+                            subprocess.run(cmd)
                     except Exception as e:
-                        print(f"{cmd_name}: {e}")
+                        print(f"{cmd[0]}: {e}")
                 else:
-                    print(f"{cmd_name}: command not found")
+                    print(f"{cmd[0]}: command not found")
 
 
 if __name__ == "__main__":
