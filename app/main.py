@@ -3,6 +3,7 @@ import os
 import re
 import subprocess
 import readline
+import shlex
 
 def typer(base,conduit:type) -> tuple:
     try:
