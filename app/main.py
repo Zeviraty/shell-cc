@@ -182,10 +182,16 @@ def main():
                     else:
                         print(f"cd: {args[0][0][0]}: No such file or directory")
             case "history":
-                for i in range(readline.get_current_history_length()):
-                    if readline.get_history_item(i) == None: continue
-                    print(f"    {i}  {readline.get_history_item(i)}")
-                print(f"    {i}  history")
+                args = argparse(split,[int])
+                if args[1][1] == True or args[0][0][1] == False:
+                    for i in range(readline.get_current_history_length()):
+                        if readline.get_history_item(i) == None: continue
+                        print(f"    {i}  {readline.get_history_item(i)}")
+                    print(f"    {i}  history")
+                else:
+                    for i in range(args[0][0][0],0):
+                        if readline.get_history_item(readline.get_current_history_length()-i) == None: continue
+                        print(f"    {readline.get_current_history_length() - i} {readline.get_history_item(readline.get_current_history_length() - i)}")
             case _:
                 if cmd[0] in cmds.keys():
                     subprocess.run(cmd)
