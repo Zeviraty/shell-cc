@@ -185,6 +185,7 @@ def main():
                 for i in range(readline.get_current_history_length()):
                     if readline.get_history_item(i) == None: continue
                     print(f"    {i}  {readline.get_history_item(i)}")
+                print(f"    {i}  history")
             case _:
                 if cmd[0] in cmds.keys():
                     subprocess.run(cmd)
