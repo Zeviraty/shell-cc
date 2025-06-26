@@ -122,12 +122,15 @@ def complete(text, state):
         return None
 
 global builtins
-builtins = ["exit","echo","type","pwd"]
+builtins = ["exit","echo","type","pwd","history"]
 
 def main():
+    readline.set_auto_history(True)
     readline.set_completer(complete)
     readline.parse_and_bind("tab: complete")
     readline.set_completer_delims(' \t\n')
+    if os.path.exists("history"):
+        readline.read_history_file("history")
     while True:
         cmd = smart_split(input("$ "))
         split = cmd[1:]
@@ -143,6 +146,7 @@ def main():
                     cmds[y] = os.path.join(x)
         match cmd[0]:
             case "exit":
+                readline.write_history_file("history")
                 args = argparse(split,[int])
                 if args[1][1] == True or args[0][0][1] == False:
                     exit(0)
@@ -175,12 +179,16 @@ def main():
                         os.chdir(os.path.expanduser(args[0][0][0]))
                     else:
                         print(f"cd: {args[0][0][0]}: No such file or directory")
+            case "history":
+                for i in range(readline.get_current_history_length()):
+                    if readline.get_history_item(i) == None: continue
+                    print(f"    {i}  {readline.get_history_item(i)}")
             case _:
                 if cmd[0] in cmds.keys():
                     subprocess.run(cmd)
                 else:
                     print(f"{' '.join(cmd)}: command not found")
-
+        readline.write_history_file("history")
 
 if __name__ == "__main__":
     main()
