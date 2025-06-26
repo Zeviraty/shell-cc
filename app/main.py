@@ -13,31 +13,48 @@ def smart_split(text):
     buffer = ''
     quote_char = None
     i = 0
+    length = len(text)
 
-    while i < len(text):
+    while i < length:
         c = text[i]
 
-        if c in ('"', "'"):
+        if c == '\\':
+            i += 1
+            if i >= length:
+                buffer += '\\'
+            else:
+                next_char = text[i]
+                if quote_char == '"':
+                    if next_char in ['\\', '"', '$', '\n']:
+                        buffer += next_char
+                    else:
+                        buffer += '\\' + next_char
+                elif quote_char is None:
+                    buffer += next_char
+                else:
+                    buffer += '\\' + next_char
+            i += 1
+            continue
+
+        if c in ("'", '"'):
             if quote_char is None:
                 quote_char = c
-                i += 1
-                continue
             elif quote_char == c:
                 quote_char = None
-                i += 1
-                continue
             else:
                 buffer += c
-        elif c.isspace() and quote_char is None:
+            i += 1
+            continue
+
+        if c.isspace() and quote_char is None:
             if buffer:
                 tokens.append(buffer)
                 buffer = ''
-            while i < len(text) and text[i].isspace():
+            while i < length and text[i].isspace():
                 i += 1
             continue
-        else:
-            buffer += c
 
+        buffer += c
         i += 1
 
     if buffer:
