@@ -125,6 +125,7 @@ def complete(text, state):
 global builtins
 builtins = ["exit","echo","type","pwd","history"]
 global append
+append = False
 
 def cmdprint(txt,out=None):
     global append
@@ -137,6 +138,7 @@ def cmdprint(txt,out=None):
             open(out,'w').write(txt+"\n")
 
 def main():
+    global append
     histfile = os.environ.get("HISTFILE")
     if histfile:
         try:
