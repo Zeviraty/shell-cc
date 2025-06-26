@@ -8,9 +8,34 @@ def typer(base,conduit:type) -> tuple:
     except:
         return (0,False)
 
-def split_phrase(text):
-    parts = re.findall(r"'([^']+)'|\"([^\"]+)\"|(\S+)", text)
-    return [part for group in parts for part in group if part]
+def smart_split(text):
+    tokens = []
+    buffer = ''
+    in_quote = False
+    i = 0
+    while i < len(text):
+        c = text[i]
+        if c == "'":
+            if in_quote:
+                in_quote = False
+                # End of quoted token, continue appending if adjacent quotes follow
+            else:
+                in_quote = True
+            i += 1
+        elif c.isspace() and not in_quote:
+            if buffer:
+                tokens.append(buffer)
+                buffer = ''
+            # Skip consecutive unquoted spaces
+            while i < len(text) and text[i].isspace():
+                i += 1
+        else:
+            buffer += c
+            i += 1
+
+    if buffer:
+        tokens.append(buffer)
+    return tokens
 
 def argparse(args,types:list[type]) -> tuple:
     tmp = []
@@ -32,7 +57,7 @@ def argparse(args,types:list[type]) -> tuple:
 def main():
     while True:
         sys.stdout.write("$ ")
-        cmd = split_phrase(input())
+        cmd = smart_split(input())
         path = os.environ["PATH"].split(":")
         cmds = {}
         for x in path:
