@@ -129,8 +129,6 @@ def main():
     readline.set_completer(complete)
     readline.parse_and_bind("tab: complete")
     readline.set_completer_delims(' \t\n')
-    if os.path.exists("history"):
-        readline.read_history_file("history")
     while True:
         user_input = input("$ ")
         readline.add_history(user_input)
@@ -182,6 +180,15 @@ def main():
                     else:
                         print(f"cd: {args[0][0][0]}: No such file or directory")
             case "history":
+                if len(split) > 1:
+                    args = argparse(split,[str,str])
+                    if args[1][1] == True or args[0][0][1] == False:
+                        print("Argument failure")
+                    else:
+                        if args[0][0][0] == "-r":
+                            readline.read_history_file(args[1][0][0])
+                        else:
+                            print("Argument failure")
                 args = argparse(split,[int])
                 if args[1][1] == True or args[0][0][1] == False:
                     for i in range(readline.get_current_history_length()):
