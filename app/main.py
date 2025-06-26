@@ -110,7 +110,7 @@ def complete(text, state):
     return results[state]
 
 def display_completions(substitution, matches, longest_match_length):
-    print("\n" + "  ".join(matches))  # two spaces
+    print("\n" + " ".join(matches))  # two spaces
     sys.stdout.write(readline.get_line_buffer())
     sys.stdout.flush()
 
