@@ -180,6 +180,7 @@ def main():
                     else:
                         print(f"cd: {args[0][0][0]}: No such file or directory")
             case "history":
+                readline.write_history_file("history")
                 for i in range(readline.get_current_history_length()):
                     if readline.get_history_item(i) == None: continue
                     print(f"    {i}  {readline.get_history_item(i)}")
