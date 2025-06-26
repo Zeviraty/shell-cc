@@ -132,6 +132,7 @@ def cmdprint(txt,out=None):
     if out == None:
         print(txt)
     else:
+        print(append)
         if append:
             open(out,'a').write(txt+"\n")
         else:
@@ -184,6 +185,14 @@ def main():
                 if i + 1 < len(tokens):
                     stderr_file = tokens[i+1]
                     i += 2
+                else:
+                    print("Syntax error: no output file specified for stderr redirection")
+                    break
+            elif tokens[i] == '2>>':
+                if i + 1 < len(tokens):
+                    stderr_file = tokens[i+1]
+                    i += 2
+                    append = True
                 else:
                     print("Syntax error: no output file specified for stderr redirection")
                     break
@@ -287,24 +296,29 @@ def main():
             case _:
                 if cmd[0] in cmds.keys():
                     try:
-                        f_stdout = open(stdout_file, "w") if stdout_file else None
-                        f_stderr = open(stderr_file, "w") if stderr_file else None
-                        result = subprocess.run(cmd,
-                                                stdout=f_stdout if f_stdout else None,
-                                                stderr=f_stderr if f_stderr else None,
-                                                text=True)
-                        if f_stdout:
-                            f_stdout.close()
-                        if f_stderr:
-                            f_stderr.close()
-                        if not stderr_file and result.stderr:
-                            print(result.stderr, end="")
+                        result = subprocess.run(
+                            cmd,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
+                            text=True
+                        )
+
+                        if result.stdout:
+                            for line in result.stdout.splitlines():
+                                cmdprint(line, stdout_file)
+                        elif stdout_file:
+                            open(stdout_file, "w").close()
+
+                        if result.stderr:
+                            for line in result.stderr.splitlines():
+                                cmdprint(line, stderr_file)
+                        elif stderr_file:
+                            open(stderr_file, "w").close()
+
                     except Exception as e:
-                        print(f"{cmd[0]}: {e}")
+                        cmdprint(f"{cmd[0]}: {e}", stderr_file)
                 else:
-                    print(f"{cmd[0]}: command not found")
-
-
+                    cmdprint(f"{cmd[0]}: command not found", stderr_file)
 
 if __name__ == "__main__":
     main()
