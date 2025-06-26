@@ -186,7 +186,7 @@ def main():
                         print("Argument failure")
                     else:
                         if args[0][0][0] == "-r":
-                            readline.read_history_file(args[1][0][0])
+                            readline.read_history_file(args[0][1][0])
                         else:
                             print("Argument failure")
                 args = argparse(split,[int])
