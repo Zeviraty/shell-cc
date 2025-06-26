@@ -127,6 +127,7 @@ builtins = ["exit","echo","type","pwd","history"]
 global append
 
 def cmdprint(txt,out=None):
+    global append
     if out == None:
         print(txt)
     else:
