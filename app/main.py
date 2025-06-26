@@ -126,6 +126,7 @@ builtins = ["exit","echo","type","pwd","history"]
 
 def main():
     if os.path.exists(os.environ["HISTFILE"]):
+        print(f"HISTFILE: {repr(histfile)}")
         histfile = os.environ.get("HISTFILE")
         if histfile:
             try:
