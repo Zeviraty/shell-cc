@@ -11,22 +11,22 @@ def typer(base,conduit:type) -> tuple:
 def smart_split(text):
     tokens = []
     buffer = ''
-    in_quote = False
+    quote_char = None
     i = 0
+
     while i < len(text):
         c = text[i]
-        if c == "'" or c == '"':
-            if in_quote:
-                in_quote = False
-                # End of quoted token, continue appending if adjacent quotes follow
-            else:
-                in_quote = True
+
+        if c in ('"', "'"):
+            if quote_char is None:
+                quote_char = c  
+            elif quote_char == c:
+                quote_char = None  
             i += 1
-        elif c.isspace() and not in_quote:
+        elif c.isspace() and quote_char is None:
             if buffer:
                 tokens.append(buffer)
                 buffer = ''
-            # Skip consecutive unquoted spaces
             while i < len(text) and text[i].isspace():
                 i += 1
         else:
@@ -35,6 +35,7 @@ def smart_split(text):
 
     if buffer:
         tokens.append(buffer)
+
     return tokens
 
 def argparse(args,types:list[type]) -> tuple:
