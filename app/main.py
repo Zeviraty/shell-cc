@@ -133,6 +133,7 @@ def main():
         readline.read_history_file("history")
     while True:
         cmd = smart_split(input("$ "))
+        readline.write_history_file("history")
         split = cmd[1:]
         path = os.environ["PATH"].split(":")
         cmds = {}
@@ -146,7 +147,6 @@ def main():
                     cmds[y] = os.path.join(x)
         match cmd[0]:
             case "exit":
-                readline.write_history_file("history")
                 args = argparse(split,[int])
                 if args[1][1] == True or args[0][0][1] == False:
                     exit(0)
@@ -180,7 +180,6 @@ def main():
                     else:
                         print(f"cd: {args[0][0][0]}: No such file or directory")
             case "history":
-                readline.write_history_file("history")
                 for i in range(readline.get_current_history_length()):
                     if readline.get_history_item(i) == None: continue
                     print(f"    {i}  {readline.get_history_item(i)}")
@@ -189,7 +188,6 @@ def main():
                     subprocess.run(cmd)
                 else:
                     print(f"{' '.join(cmd)}: command not found")
-        readline.write_history_file("history")
 
 if __name__ == "__main__":
     main()
