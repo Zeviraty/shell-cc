@@ -115,6 +115,7 @@ builtins = ["exit","echo","type","pwd"]
 def main():
     readline.set_completer(complete)
     readline.parse_and_bind("tab: complete")
+    readline.set_completer_delims(' \t\n')
     while True:
         cmd = smart_split(input("$ "))
         split = cmd[1:]
