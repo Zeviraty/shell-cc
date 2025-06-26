@@ -22,17 +22,22 @@ def smart_split(text):
             i += 1
             if i >= length:
                 buffer += '\\'
-            else:
-                next_char = text[i]
-                if quote_char == '"':
-                    if next_char in ['\\', '"', '$', '\n']:
-                        buffer += next_char
-                    else:
-                        buffer += '\\' + next_char
-                elif quote_char is None:
+                break
+
+            next_char = text[i]
+
+            if quote_char == '"':
+                # Only escape these in double quotes: \ " $
+                if next_char in ['\\', '"']:
                     buffer += next_char
                 else:
                     buffer += '\\' + next_char
+            elif quote_char is None:
+                # Outside any quotes: escape any character
+                buffer += next_char
+            elif quote_char == "'":
+                # Inside single quotes: backslash is literal
+                buffer += '\\' + next_char
             i += 1
             continue
 
@@ -42,7 +47,7 @@ def smart_split(text):
             elif quote_char == c:
                 quote_char = None
             else:
-                buffer += c
+                buffer += c  # quote inside other quote type
             i += 1
             continue
 
