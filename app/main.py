@@ -132,7 +132,9 @@ def main():
     if os.path.exists("history"):
         readline.read_history_file("history")
     while True:
-        cmd = smart_split(input("$ "))
+        user_input = input("$ ")
+        readline.add_history(user_input)
+        cmd = smart_split(user_input)
         readline.write_history_file("history")
         split = cmd[1:]
         path = os.environ["PATH"].split(":")
