@@ -104,15 +104,10 @@ def complete(text, state):
                 continue
         complete._cmds = cmds
 
-    results = [x + " " for x in [*complete._cmds, *builtins] if x.startswith(text)] + [None]
+    results = [x for x in [*complete._cmds, *builtins] if x.startswith(text)] + [None]
     if results == [None]:
         print("\x07")
     return results[state]
-
-def display_completions(substitution, matches, longest_match_length):
-    print("\n" + " ".join(matches))  # two spaces
-    sys.stdout.write(readline.get_line_buffer())
-    sys.stdout.flush()
 
 global builtins
 builtins = ["exit","echo","type","pwd"]
