@@ -44,12 +44,17 @@ def smart_split(text):
         if c in ("'", '"'):
             if quote_char is None:
                 quote_char = c
+                i += 1
+                continue
             elif quote_char == c:
                 quote_char = None
-            else:
-                buffer += c  # quote inside other quote type
-            i += 1
-            continue
+                i += 1
+                continue
+    else:
+        # quote inside another quote type — treat literally
+        buffer += c
+        i += 1
+        continue
 
         if c.isspace() and quote_char is None:
             if buffer:
