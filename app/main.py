@@ -125,6 +125,7 @@ global builtins
 builtins = ["exit","echo","type","pwd","history"]
 
 def main():
+    initial_history_length = readline.get_current_history_length()
     readline.set_auto_history(False)
     readline.set_completer(complete)
     readline.parse_and_bind("tab: complete")
@@ -190,7 +191,11 @@ def main():
                         elif args[0][0][0] == "-w":
                             readline.write_history_file(args[0][1][0])
                         elif args[0][0][0] == "-a":
-                            readline.append_history_file(readline.get_current_history_length(),args[0][1][0])
+                            current_length = readline.get_current_history_length()
+                            delta = current_length - initial_history_length
+                            if delta > 0:
+                                readline.append_history_file(delta, args[0][1][0])
+                            initial_history_length = current_length
                         else:
                             print("Argument failure")
                 else:
