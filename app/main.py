@@ -150,33 +150,44 @@ def main():
         tokens = shlex.split(user_input)
         if not tokens:
             continue
-        cmd = smart_split(user_input)
-        redirect_index = None
-        redirect_file = None
-        for i, token in enumerate(tokens):
-            if token == '>' or token == '1>':
-                redirect_index = i
-                break
-
-        if redirect_index is not None:
-            if redirect_index + 1 < len(tokens):
-                redirect_file = tokens[redirect_index + 1]
-                cmd = tokens[:redirect_index]
+        
+        stdout_file = None
+        stderr_file = None
+        clean_tokens = []
+        
+        i = 0
+        while i < len(tokens):
+            if tokens[i] in ('>', '1>'):
+                if i + 1 < len(tokens):
+                    stdout_file = tokens[i+1]
+                    i += 2
+                else:
+                    print("Syntax error: no output file specified for stdout redirection")
+                    break
+            elif tokens[i] == '2>':
+                if i + 1 < len(tokens):
+                    stderr_file = tokens[i+1]
+                    i += 2
+                else:
+                    print("Syntax error: no output file specified for stderr redirection")
+                    break
             else:
-                print("Syntax error: no output file specified for redirection")
-                continue
-        else:
-            cmd = tokens
-        if not cmd:
+                clean_tokens.append(tokens[i])
+                i += 1
+        
+        if len(clean_tokens) == 0:
             continue
-        cmd = cmd
+        
+        cmd = clean_tokens
+        split = cmd[1:]
+        
         current_length = readline.get_current_history_length()
         delta = current_length - initial_history_length
         if delta > 0:
-            if os.environ.get("HISTFILE") != None and os.path.exists(os.environ.get("HISTFILE")):
-                readline.append_history_file(delta,os.environ.get("HISTFILE"))
+            if os.environ.get("HISTFILE") is not None and os.path.exists(os.environ.get("HISTFILE")):
+                readline.append_history_file(delta, os.environ.get("HISTFILE"))
         initial_history_length = current_length
-        split = cmd[1:]
+        
         path = os.environ["PATH"].split(":")
         cmds = {}
         for x in path:
@@ -187,6 +198,7 @@ def main():
             for y in ls:
                 if os.access(os.path.join(x,y), os.X_OK):
                     cmds[y] = os.path.join(x)
+        
         match cmd[0]:
             case "exit":
                 args = argparse(split,[int])
@@ -195,37 +207,37 @@ def main():
                 else:
                     exit(args[0][0][0])
             case "echo":
-                if len(cmd[1:]) == 0:
-                    cmdprint("",redirect_file)
+                if len(split) == 0:
+                    cmdprint("", stdout_file)
                 else:
-                    cmdprint(" ".join(split),redirect_file)
+                    cmdprint(" ".join(split), stdout_file)
             case "type":
                 args = argparse(split,[str])
                 if args[1][1] == True or args[0][0][1] == False:
-                    cmdprint("Argument failure",redirect_file)
+                    cmdprint("Argument failure", stdout_file)
                 else:
                     if args[0][0][0] in builtins:
-                        cmdprint(f"{args[0][0][0]} is a shell builtin",redirect_file)
+                        cmdprint(f"{args[0][0][0]} is a shell builtin", stdout_file)
                     elif args[0][0][0] in cmds.keys():
-                        cmdprint(f"{args[0][0][0]} is {cmds[args[0][0][0]]}/{args[0][0][0]}",redirect_file)
+                        cmdprint(f"{args[0][0][0]} is {cmds[args[0][0][0]]}/{args[0][0][0]}", stdout_file)
                     else:
-                        cmdprint(f"{args[0][0][0]}: not found",redirect_file)
+                        cmdprint(f"{args[0][0][0]}: not found", stdout_file)
             case "pwd":
-                cmdprint(os.getcwd(),redirect_file)
+                cmdprint(os.getcwd(), stdout_file)
             case "cd":
                 args = argparse(split,[str])
                 if args[1][1] == True or args[0][0][1] == False:
-                    cmdprint("Argument failure",redirect_file)
+                    cmdprint("Argument failure", stdout_file)
                 else:
                     if os.path.exists(os.path.expanduser(args[0][0][0])):
                         os.chdir(os.path.expanduser(args[0][0][0]))
                     else:
-                        cmdprint(f"cd: {args[0][0][0]}: No such file or directory",redirect_file)
+                        cmdprint(f"cd: {args[0][0][0]}: No such file or directory", stdout_file)
             case "history":
                 if len(split) > 1:
                     args = argparse(split,[str,str])
                     if args[1][1] == True or args[0][0][1] == False:
-                        cmdprint("Argument failure",redirect_file)
+                        cmdprint("Argument failure", stdout_file)
                     else:
                         if args[0][0][0] == "-r":
                             readline.read_history_file(args[0][1][0])
@@ -238,14 +250,14 @@ def main():
                                 readline.append_history_file(delta, args[0][1][0])
                                 saved_history_length = current_length
                         else:
-                            cmdprint("Argument failure",redirect_file)
+                            cmdprint("Argument failure", stdout_file)
                 else:
                     args = argparse(split,[int])
                     if args[1][1] == True or args[0][0][1] == False:
                         for i in range(readline.get_current_history_length()):
                             if readline.get_history_item(i) == None: continue
-                            cmdprint(f"    {i}  {readline.get_history_item(i)}",redirect_file)
-                        cmdprint(f"    {i}  history",redirect_file)
+                            cmdprint(f"    {i}  {readline.get_history_item(i)}", stdout_file)
+                        cmdprint(f"    {i}  history", stdout_file)
                     else:
                         count = args[0][0][0]
                         length = readline.get_current_history_length()
@@ -253,21 +265,27 @@ def main():
                         for i in range(start, length + 1):
                             line = readline.get_history_item(i)
                             if line is not None:
-                                cmdprint(f"    {i}  {line}",redirect_file)
+                                cmdprint(f"    {i}  {line}", stdout_file)
             case _:
                 if cmd[0] in cmds.keys():
                     try:
-                        if redirect_file:
-                            with open(redirect_file, "w") as f:
-                                result = subprocess.run(cmd, stdout=f, stderr=subprocess.PIPE, text=True)
-                                if result.stderr:
-                                    print(result.stderr, end="")
-                        else:
-                            subprocess.run(cmd)
+                        f_stdout = open(stdout_file, "w") if stdout_file else None
+                        f_stderr = open(stderr_file, "w") if stderr_file else None
+                        result = subprocess.run(cmd,
+                                                stdout=f_stdout if f_stdout else None,
+                                                stderr=f_stderr if f_stderr else None,
+                                                text=True)
+                        if f_stdout:
+                            f_stdout.close()
+                        if f_stderr:
+                            f_stderr.close()
+                        if not stderr_file and result.stderr:
+                            print(result.stderr, end="")
                     except Exception as e:
                         print(f"{cmd[0]}: {e}")
                 else:
                     print(f"{cmd[0]}: command not found")
+
 
 
 if __name__ == "__main__":
