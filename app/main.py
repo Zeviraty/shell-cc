@@ -80,7 +80,7 @@ def main():
                 if len(cmd[1:]) == 0:
                     print()
                 else:
-                    print(" ".join(cmd[1:]))
+                    print(" ".join(split))
             case "type":
                 args = argparse(split,[str])
                 if args[1][1] == True or args[0][0][1] == False:
