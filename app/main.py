@@ -140,7 +140,7 @@ def main():
         user_input = input("$ ")
         readline.add_history(user_input)
         cmd = smart_split(user_input)
-        readline.write_history_file("history")
+        readline.write_history_file()
         split = cmd[1:]
         path = os.environ["PATH"].split(":")
         cmds = {}
