@@ -89,7 +89,6 @@ def main():
         sys.stdout.write("$ ")
         cmd = smart_split(input())
         split = cmd[1:]
-        print(cmd)
         path = os.environ["PATH"].split(":")
         cmds = {}
         for x in path:
