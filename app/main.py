@@ -124,12 +124,16 @@ def complete(text, state):
 
 global builtins
 builtins = ["exit","echo","type","pwd","history"]
+global append
 
 def cmdprint(txt,out=None):
     if out == None:
         print(txt)
     else:
-        open(out,'a').write(txt+"\n")
+        if append:
+            open(out,'a').write(txt+"\n")
+        else:
+            open(out,'w').write(txt+"\n")
 
 def main():
     histfile = os.environ.get("HISTFILE")
@@ -153,11 +157,20 @@ def main():
         
         stdout_file = None
         stderr_file = None
+        append = False
         clean_tokens = []
         
         i = 0
         while i < len(tokens):
             if tokens[i] in ('>', '1>'):
+                if i + 1 < len(tokens):
+                    stdout_file = tokens[i+1]
+                    i += 2
+                else:
+                    print("Syntax error: no output file specified for stdout redirection")
+                    break
+            elif tokens[i] in ('>>','1>>'):
+                append = True
                 if i + 1 < len(tokens):
                     stdout_file = tokens[i+1]
                     i += 2
